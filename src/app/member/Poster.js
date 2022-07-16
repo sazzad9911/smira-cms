@@ -118,7 +118,7 @@ const Poster = () => {
     return (
         <div>
         <div className="page-header">
-          <h3 className="page-title"> Popular Deals </h3>
+          <h3 className="page-title"> Favorite Categories </h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item"><a href="!#" onClick={event => event.preventDefault()}>All</a></li>

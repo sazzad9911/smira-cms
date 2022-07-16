@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ProgressBar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
-import {postData,url} from '../../action';
+import {postData,url,convertDate} from '../../action';
 
 const AllMember = () => { 
     const userInfo = useSelector(state => state.userInfo)
@@ -15,7 +15,8 @@ const AllMember = () => {
     React.useEffect(() => {
         postData(url+'/getData',{
             tableName: 'user',
-            condition:SearchValue?`email LIKE '%${SearchValue}%'`:''
+            condition:SearchValue?`email like '${SearchValue}%' OR phone like '${SearchValue}%'`:'',
+            orderColumn:'id'
         }).then(result=>{
             if(Array.isArray(result)){
                 let arr=[]
@@ -83,6 +84,7 @@ const AllMember = () => {
                                             <th> Membership </th>
                                             <th> Email </th>
                                             <th> Phone </th>
+                                            <th>Creation Date </th>
                                             <th> Action</th>
                                         </tr>
                                     </thead>
@@ -100,15 +102,17 @@ const AllMember = () => {
                                                         doc.membership_type.match(/platinum/)?'SCP':doc.membership_type.match(/diamond/)?'SCD':'NON':''} </td>
                                                         <td> {doc.email ? doc.email : '--'} </td>
                                                         <td> {doc.phone ? doc.phone : '--'} </td>
+                                                        <td>{doc.creationTime?convertDate(doc.creationTime):''}</td>
                                                         <td>
                                                             <Link to={'member_action/'+doc.uid}>
                                                                 Change Plan
                                                             </Link>
                                                         </td>
+                                                        
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <td><td></td></td>
+                                                <td><td>Loading..</td></td>
                                             )
                                         }
                                     </tbody>

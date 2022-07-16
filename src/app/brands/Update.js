@@ -32,13 +32,13 @@ const Update = () => {
         let arr=brands.filter(d=>d.id==id)
         setName(arr[0].name)
         setType(arr[0].type)
-        setAddress(arr[0].address)
+        setAddress(arr[0].outlets)
         setPhone(arr[0].phone)
       }
     },[brands])
 
     const save=() => {
-      if(!Name || !Address || !Phone || !Type){
+      if(!Name || !Address || !Type){
         setError('Please fill all the required fields')
         return
       }
@@ -46,7 +46,7 @@ const Update = () => {
       postData(url + '/updateData',{
         auth: auth.currentUser,
         tableName: 'brands',
-        columns: ['name','type','address','phone'],
+        columns: ['name','type','outlets','phone'],
         values: [Name.replace(/[^\w\s]/gi, ''),Type,Address,Phone],
         condition:'id='+id
       }).then(result => {
@@ -124,19 +124,19 @@ const Update = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      {/* <div className="col-md-6">
                       <Form.Group className="row">
                           <label className="col-sm-3 col-form-label">Phone Number</label>
                           <div className="col-sm-9">
                           <Form.Control value={Phone} onChange={(e)=>setPhone(e.target.value)} placeholder='your phone number' type="number" />
                           </div>
                         </Form.Group>
-                      </div>
+                      </div> */}
                       <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Address</label>
+                          <label className="col-sm-3 col-form-label">Number of Outlets</label>
                           <div className="col-sm-9">
-                          <Form.Control value={Address} onChange={(e)=>setAddress(e.target.value)} placeholder='address' type="text" />
+                          <Form.Control value={Address} onChange={(e)=>setAddress(e.target.value)} placeholder='eg. 2' type="number" />
                           </div>
                         </Form.Group>
                       </div>

@@ -215,77 +215,7 @@ const Add = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="row">
-        <div className="col-12 grid-margin">
-          <div className="card">
-            <div className="card-body">
-            <div className="row">
-                  <div className="col-lg-12 grid-margin stretch-card">
-                    <div className="card">
-                      <div className="card-body">
-                        <h4 className="card-title">Flash Banner</h4>
-                        <p className="card-description"> Add flash banner only two options
-                        </p>
-                        <div className="row">
-                      <div className="col-md-6">
-                      <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Select a banner</label>
-                          <div className="col-sm-9">
-                            <select onChange={(e)=>{
-                              //setMembership(e.target.value)
-                              setBanner(e.target.value);
-
-                            }} className="form-control">
-                            <option>Select one</option>
-                            {
-                              banner?(
-                                banner.map((doc, i) =>(
-                                  <option key={i} value={doc.id}>
-                                    {doc.name}
-                                  </option>
-                                ))
-                              ):(
-                                <option>Select one</option>
-                              )
-                            }
-                              
-                             
-                            </select>
-                          </div>
-                        </Form.Group>
-                      </div>
-                      <div className="col-md-6">
-                      <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Select Index</label>
-                          <div className="col-sm-9">
-                            <select onChange={(e)=>{
-                              //setMembership(e.target.value)
-                              setIndex(e.target.value)
-
-                            }} className="form-control">
-                            <option>Select one</option>
-                            <option value={1}>first flush banner</option>
-                            <option value={2}>second flush banner</option>
-                             
-                            </select>
-                          </div>
-                        </Form.Group>
-                      </div>
-                    </div>
-                    <p style={{ color: 'red' }}>{Error}</p>
-                    <button onClick={() =>{
-                      addFlush()
-                    }} className='btn btn-gradient-danger btn-rounded btn-fw'>ADD</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
+      </div>  
     </div>
   )
 };

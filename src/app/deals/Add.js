@@ -282,13 +282,32 @@ const Add = () => {
                         </Form.Group>
                       </div>
                       <div className="col-md-6">
-                        <Form.Group className="row">
+                      <Form.Group className="row">
                           <label className="col-sm-3 col-form-label">Description</label>
                           <div className="col-sm-9">
-                          <textarea className="form-control" rows="4" placeholder='Description' onChange={(e) => setDescription(e.target.value)} type="text">
-                        </textarea>
+                          <CKEditor
+                             editor={ ClassicEditor }
+                             data={Description}
+                             onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+
+                        setDescription(data)
+                        
+                    } }
+                    onBlur={ ( event, editor ) => {
+                        //console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( event, editor ) => {
+                       // console.log( 'Focus.', editor );
+                    } }
+                />
                           </div>
                         </Form.Group>
+                        
                       </div>
                       </div>
                     <div className="row">

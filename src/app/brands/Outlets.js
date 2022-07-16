@@ -188,6 +188,7 @@ const Outlets = () => {
                     <thead>
                       <tr>
                         <th> Brand Name </th>
+                        <th> Contact No </th>
                         <th> Address </th>
                         <th> Action </th>
                       </tr>
@@ -200,6 +201,7 @@ const Outlets = () => {
                                 <td>
                                 <td>{brands?brands.filter(d=>d.id==doc.brand_id)[0].name:'...'}</td>
                                 </td>
+                                <td>{doc.phone}</td>
                                 <td>{doc.address}</td>
                                 <td>
                                 <button className='btn btn-gradient-danger btn-rounded btn-fw' onClick={()=>{

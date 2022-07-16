@@ -123,7 +123,7 @@ const Banner = () => {
     return (
         <div>
         <div className="page-header">
-          <h3 className="page-title"> Activities Brands </h3>
+          <h3 className="page-title"> Super Saver Deals </h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item"><a href="!#" onClick={event => event.preventDefault()}>All</a></li>

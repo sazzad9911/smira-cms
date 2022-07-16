@@ -62,6 +62,9 @@ class Sidebar extends Component {
       { path:'/discount', state:'discount'},
       { path:'/posters', state:'posters'},
       { path:'/flash', state:'flash'},
+      { path:'/send_message', state:'send_message'},
+      { path:'/offer', state:'offer'},
+      { path:'/new', state:'new'}
     ];
 
     dropdownPaths.forEach((obj => {
@@ -123,6 +126,12 @@ class Sidebar extends Component {
             <Link className="nav-link" to="/messages">
               <span className="menu-title">Talk to Us Enquiry</span>
               <i className="mdi mdi-comment-text menu-icon"></i>
+            </Link>
+          </li>
+          <li className={this.isPathActive('/send_message') ? 'nav-item active' : 'nav-item'}>
+            <Link className="nav-link" to="/send_message">
+              <span className="menu-title">Send Notification</span>
+              <i className="mdi mdi-book-open menu-icon"></i>
             </Link>
           </li>
           <li className={this.isPathActive('/flash') ? 'nav-item active' : 'nav-item'}>
@@ -256,16 +265,22 @@ class Sidebar extends Component {
                   to="/posters/delete"><>Slider List</></Link></li>
                 <li className="nav-item"> <Link className={
                   this.isPathActive('/posters/poster') ? 'nav-link active' : 'nav-link'}
-                  to="/posters/poster"><>Popular Deals</></Link></li>
+                  to="/posters/poster"><>Favorite Categories</></Link></li>
                 <li className="nav-item"> <Link className={
                   this.isPathActive('/posters/banner') ? 'nav-link active' : 'nav-link'}
-                  to="/posters/banner"><>Activities Near You</></Link></li>
+                  to="/posters/banner"><>Super Saver Deals</></Link></li>
                   <li className="nav-item"> <Link className={
                   this.isPathActive('/posters/destination') ? 'nav-link active' : 'nav-link'}
                   to="/posters/destination"><>Destination to go</></Link></li>
                   <li className="nav-item"> <Link className={
                   this.isPathActive('/posters/restaurants') ? 'nav-link active' : 'nav-link'}
-                  to="/posters/restaurants"><>Popular Restaurants</></Link></li>
+                  to="/posters/restaurants"><>Doorstep Deals</></Link></li>
+                   <li className="nav-item"> <Link className={
+                  this.isPathActive('/posters/offer') ? 'nav-link active' : 'nav-link'}
+                  to="/posters/offer"><>Adventure Special offers</></Link></li>
+                  <li className="nav-item"> <Link className={
+                  this.isPathActive('/posters/new') ? 'nav-link active' : 'nav-link'}
+                  to="/posters/new"><>One day picnic deals</></Link></li>
               </ul>
             </Collapse>
           </li>

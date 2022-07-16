@@ -83,8 +83,9 @@ const Enquiry = () => {
                                     <thead>
                                         <tr>
                                             <th> Name </th>
+                                            <th> Email </th>
                                             <th> Phone </th>
-                                            <th> Hotel Name </th>
+                                            <th> Address </th>
                                             <th>Room</th>
                                             <th>Children</th>
                                             <th>Adults</th>
@@ -152,9 +153,10 @@ const List = (props) => {
     return (
         <tr>
             <td> {user?user.filter(h => h.uid ==doc.uid)[0].name:''} </td>
+            <td> {user?user.filter(h => h.uid ==doc.uid)[0].email:''} </td>
             <td> {user?user.filter(h => h.uid ==doc.uid)[0].phone:''} </td>
             <td>
-                {hotels?hotels.filter(d=>d.id==doc.hotel_id)[0].name:''}
+                {doc.address}
             </td>
             <td>{doc.room}</td>
             <td>{doc.children}</td>
@@ -163,5 +165,5 @@ const List = (props) => {
             <td> {convertDate(doc.check_out)} </td>
            
         </tr>
-    )
+    ) 
 }

@@ -286,37 +286,6 @@ const Update = () => {
                       </div>
                     </div>
                     <div className="row">
-                      {
-                        /*
-                        <div className="col-md-6">
-                        <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Type</label>
-                          <div className="col-sm-9">
-                          <Form.Control value={Type?Type:''} onChange={(e)=>setType(e.target.value)} placeholder='eg. pizza,burger,hair cut.. '  type="text" />
-                          </div>
-                        </Form.Group>
-                      </div>
-                        */
-                      }
-                      <div className="col-md-6">
-                        <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Valid till</label>
-                          <div className="col-sm-9">
-                          <Form.Control value={Valid} onChange={(e)=>setValid(e.target.value)} placeholder='type of your deal'  type="date" />
-                          </div>
-                        </Form.Group>
-                      </div>
-                      <div className="col-md-6">
-                        <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Description</label>
-                          <div className="col-sm-9">
-                          <textarea value={Description} className="form-control" rows="4" placeholder='Description' onChange={(e) => setDescription(e.target.value)} type="text">
-                        </textarea>
-                          </div>
-                        </Form.Group>
-                      </div>
-                      </div>
-                    <div className="row">
                       <div className="col-md-6">
                         <Form.Group className="row">
                           <label className="col-sm-3 col-form-label">Select Brand</label>
@@ -356,6 +325,57 @@ const Update = () => {
                         }
                       </div>
                     </div>
+                    <div className="row">
+                      {
+                        /*
+                        <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Type</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Type?Type:''} onChange={(e)=>setType(e.target.value)} placeholder='eg. pizza,burger,hair cut.. '  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                        */
+                      }
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Valid till</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Valid} onChange={(e)=>setValid(e.target.value)} placeholder='type of your deal'  type="date" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                      <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Description</label>
+                          <div className="col-sm-9">
+                          <CKEditor
+                             editor={ ClassicEditor }
+                             data={Description}
+                             onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+
+                        setDescription(data)
+                        
+                    } }
+                    onBlur={ ( event, editor ) => {
+                        //console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( event, editor ) => {
+                       // console.log( 'Focus.', editor );
+                    } }
+                />
+                          </div>
+                        </Form.Group>
+                        
+                      </div>
+                      </div>
+                    
                     {Error?(
                     <div className="alert alert-primary" role="alert">{Error}</div>
                   ):(

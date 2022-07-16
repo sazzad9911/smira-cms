@@ -376,7 +376,7 @@ const Add = () => {
                       </div>
                     </Form.Group>
                   </div>
-                </div>
+                </div> 
                 <div className="row">
                 <div className="col-md-6">
                     <Form.Group className="row">

@@ -24,6 +24,7 @@ const Flash = () => {
     const [Category,setCategory]= React.useState()
     const [ImageSize,setImageSize]= React.useState(false)
     const brands=useSelector(state => state.brands)
+    const [Date,setDate]= React.useState()
 
     React.useEffect(() => {
         postData(url + '/getData',{
@@ -66,6 +67,10 @@ const Flash = () => {
             setError("You can only add 700*500 size image")
             return;
         }
+        if(!Date){
+          setError("Invalid date for validity")
+          return;
+        }
         const data=new FormData()
         data.append('file', Files[0])
         Axios.post(url+'/uploadWithData',data).then(res=>{
@@ -73,8 +78,8 @@ const Flash = () => {
             postData(url + '/setData',{
               auth: auth.currentUser,
               tableName: 'flash_banner',
-              columns: ['image'],
-              values: [res.data.url]
+              columns: ['image','validity'],
+              values: [res.data.url,Date]
             }).then(result => {
               console.log(result);
               if(result.insertId){
@@ -114,6 +119,17 @@ const Flash = () => {
                             setFiles(e.target.files)
                             imageSize(700,500,e.target.files)
                             }}  type="file" />
+                        </div>
+                      </Form.Group>
+                    </div>
+                    <div className="col-md-6">
+                      <Form.Group className="row">
+                        <label className="col-sm-3 col-form-label">Validity</label>
+                        <div className="col-sm-9">
+                        <Form.Control onChange={(e)=>{
+                            setDate(e.target.value);
+                            console.log(e.target.value)
+                            }}  type="date" />
                         </div>
                       </Form.Group>
                     </div>

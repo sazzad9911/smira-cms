@@ -48,13 +48,14 @@ const Order = () => {
           setTotalPage(numPage)
            }
         } 
-        if (hotels && hotelBooking && userInfo && bookAppointment&& deals && Checked == 'Deals') {
+        if (brands && hotels && hotelBooking && userInfo && bookAppointment&& deals && Checked == 'Deals') {
             let arr = []
             bookAppointment.forEach((doc,i) => {
                 if(i<(Page*10) && i>=((Page*10)-10)){
                 let user = userInfo.filter(user => user.uid == doc.uid)
                 let deal = deals.filter(deal => deal.id == doc.deal_id)
-                let data = { data: doc, user: user[0], deal: deal[0] }
+                let brand = brands.filter(b=>b.id==deal[0].brand_id)
+                let data = { data: doc, user: user[0], deal: deal[0],brand: brand[0]}
                 arr.push(data)
                 }
             })
@@ -73,7 +74,7 @@ const Order = () => {
           setTotalPage(numPage)
            }
         }
-    }, [Checked+Page+hotels+deals+userInfo+bookAppointment+hotelBooking])
+    }, [Checked+Page+hotels+deals+userInfo+bookAppointment+hotelBooking+brands])
     React.useEffect(() => {
         postData(url + '/getData', {
             tableName: 'hotel_booking',
@@ -103,7 +104,7 @@ const Order = () => {
             auth: auth.currentUser,
             tableName: 'redeem_history',
             columns: ['purches_type', 'purches_id', 'name', 'date', 'image', 'uid'],
-            values: ['hotel', data.hotel.id, data.hotel.name, writeDate(new Date()), data.hotel.image, data.user.uid]
+            values: ['hotel', data.data.id, data.hotel.name, writeDate(new Date()), data.hotel.image, data.user.uid]
         }).then(d => {
             if (d.insertId) {
                 postData(url + '/updateData', {
@@ -121,45 +122,62 @@ const Order = () => {
         let user=userInfo.filter(d=>d.uid==data.user.uid)
         if(user && user.length > 0 && user[0].email){
             postData(url + '/sendMessage',{
-                title: 'Your Booking Request has been confirmed',
-                body:`This email is to confirm your booking on ${convertDate(data.data.check_in)} for a ${data.data.room} room at the ${data.hotel.name}. The check-in date shall be on ${convertDate(data.data.check_in)} and the check-out date shall be on ${convertDate(data.data.check_out)}.`,
+                title: 'Booking Request Confirmed!',
+                body:`Please check your email for your booking details at ${data.hotel.name}.`,
                 uid: user[0].uid
             }).then(response => {
+                console.log(response)
+            })
+            postData(url + '/setData',{
+                auth: auth.currentUser,
+                tableName:'notification',
+                columns:['name','description','uid'],
+                values: ['Booking Request Confirmed!',`Please check your email for your booking details at ${data.hotel.name}.`,user[0].uid]
+            }).then(response =>{
                 console.log(response)
             })
             postData(url + '/sendEmail',{
                 to:user[0].email,
                 subject:'Your Booking Request has been confirmed - Smira Club',
-                text:`<p>Hello ${user[0].name}</p>
-                <p>This email is to confirm your booking on ${convertDate(data.data.check_in)} for a ${data.data.room} room at the ${data.hotel.name}. The check-in date shall be on ${convertDate(data.data.check_in)} and the check-out date shall be on ${convertDate(data.data.check_out)}.</p>
+                text:`<p>Hello <b> ${user[0].name}</b></p>
+                <p>This email is to confirm your booking at-</p> 
 
-               <p> Further details of your booking are listed below:</p>
-
-               <p> Number of guests: ${data.data.adult}A, ${data.data.children}C</p>
-
-               <p>Amenities: ${data.hotel.conditions}</p>
-
-              <p> If you have any inquiries, please do not hesitate to contact us.</p>
-
-            <p> We are looking forward to your visit and hope that you enjoy your stay.</p>
-
-
-               <p> Best regards</p>
-              <p>  Smira Club</p>
-
+               <p>Hotel name: ${data.hotel.name}</p>
+               <p> Hotel location: ${data.hotel.address}</p>
+               <p> Total number of guests: ${data.data.adult+data.data.children}</p>
+               <p>Number of kids below 5 years: ${data.data.children} </p>
+               <p>Number of rooms: ${data.data.room}</p>
+               <p> Food (Breakfast and Dinner unlimited): <b>${data.data.veg}</b> Veg, ${data.data.non_veg} Non-Veg</p>
+               <p> Amenities: <b>${data.hotel.conditions}</b></p>
+               <p>Check-in date: ${convertDate(data.data.check_in)}</p>
+               <p> Check-out date: ${convertDate(data.data.check_out)}</p>
+                
+                <p>If you have any inquiries, please do not hesitate to contact us.</p>
+                
+               <p> We are looking forward to your visit and hope that you enjoy your stay.</p>
+                
+                
+               <p> Best regards, </p>
+               <p> Smira Club</p>
                  
-               <p> Ranjit Studio Compound, </p>
+               <b> Smira Services - ‘A sweet memory is really affordable’ </b>
+                 
+                 
+                 
+                 
+                <b>Smira Sevices Pvt. Ltd. </b>
+                <p>Ranjit Studio Compound, </p>
                <p> Ground & 1st Floor, </p>
-               <p> C-Block, Plot No. 115, </p>
+               <p> M-Block, Plot No. 115, </p>
                <p> Dada Saheb Phalke Marg, </p>
-               <p> Opp. Bharatkshetra, Hindmata, </p>
+               <p>  Opp. Bharatkshetra, Hindmata, </p>
                <p> Dadar East, Mumbai, </p>
-                <p>Maharashtra 400014 </p>
+               <p> Maharashtra 400014 </p>
                  
-                <p>Contact No.</p> 
-                <p>9819812456</p>
+               <b> Contact No. </b>
                <p> 9833733477</p>
-               <p> 9820342389</p>
+               <p>9833733977</p>
+               <p> Email - support@smira.club</p>
                 `
             }).then(result => {
                 console.log(result);
@@ -180,35 +198,49 @@ const Order = () => {
         let user=userInfo.filter(d=>d.uid==data.user.uid)
         if(user && user.length > 0 && user[0].email){
             postData(url + '/sendMessage',{
-                title: 'Your Booking Request has not been confirmed',
-                body:`We had received your request for a booking on ${convertDate(data.data.check_in)} for a ${data.data.room} room at the ${data.hotel.name}. We are very pleased to know that you want a booking with us, however, we regret to inform you that your request has NOT BEEN CONFIRMED due to non-availability of rooms or some technical reasons.`,
+                title: 'Booking Request Not Confirmed.',
+                body:`Your booking at ${data.hotel.name} has not been confirmed.`,
                 uid: user[0].uid
             }).then(response => {
+                console.log(response)
+            })
+            postData(url + '/setData',{
+                auth: auth.currentUser,
+                tableName:'notification',
+                columns:['name','description','uid'],
+                values: ['Booking Request Not Confirmed.',`Your booking at ${data.hotel.name} has not been confirmed.`,user[0].uid]
+            }).then(response =>{
                 console.log(response)
             })
             postData(url + '/sendEmail',{
                 to:user[0].email,
                 subject:'Your Booking Request has not been confirmed - Smira Club',
-                text:`<p>Hello ${user[0].name}</p>
-                <p>We had received your request for a booking on ${convertDate(data.data.check_in)} for a ${data.data.room} room at the ${data.hotel.name}. We are very pleased to know that you want a booking with us, however, we regret to inform you that your request has NOT BEEN CONFIRMED due to non-availability of rooms or some technical reasons.</p>
-
-                <p>Sorry for the inconvenience. We assure you that we will be available in the future for you whenever you wish to make a booking.</p>
-
-                <p>Best Regards</p>
-                <p>Smira Club</p>
-                 
-               <p> Ranjit Studio Compound, </p>
-               <p> Ground & 1st Floor, </p>
-               <p> C-Block, Plot No. 115, </p>
-               <p> Dada Saheb Phalke Marg, </p>
-               <p> Opp. Bharatkshetra, Hindmata, </p>
-               <p> Dadar East, Mumbai, </p>
+                text:`<p>Hello <b>${user[0].name}</b>,</p>
+                <p>We had received your request for a booking at- 
+                <p>Hotel location: ${data.hotel.address}</p>
+                <p>Total number of guests: ${data.data.adult+data.data.children} </p>
+                <p>Number of kids below 5 years: ${data.data.children}</p>
+                <p>Number of rooms: ${data.data.room}</p>
+                <p>Check-in date: ${convertDate(data.data.check_in)}</p>
+                <p>Check-out date: ${convertDate(data.data.check_out)}</p>
+                <p>We are very pleased to know that you want a booking with us, however, we regret to inform you that your request has <b>NOT BEEN CONFIRMED</b> due to non-availability of rooms or some technical reasons.</p>
+                <p>Sorry for the inconvenience! We assure you that we will be available in the future for you whenever you wish to make a booking.</p>
+                <p>Best regards, 
+                <p>Smira Club
+                <b>Smira Services - ‘A sweet memory is really affordable’ </b>
+                <p>Smira Services Pvt. Ltd. </p>
+                <p>Ranjit Studio Compound, </p>
+                <p>Ground & 1st Floor, </p>
+                <p>M-Block, Plot No. 115, </p>
+                <p>Dada Saheb Phalke Marg, </p>
+                <p>Opp. Bharatkshetra, Hindmata,</p> 
+                <p>Dadar East, Mumbai, </p>
                 <p>Maharashtra 400014 </p>
-                 
-                <p>Contact No.</p> 
-                <p>9819812456</p>
-               <p> 9833733477</p>
-               <p> 9820342389</p>
+ 
+                <b>Contact No.</b> 
+                <p>9833733477</p>
+                <p>9833733977</p>
+                <p>Email - support@smira.club</p>
                 `
             }).then(result => {
                 console.log(result);
@@ -221,7 +253,7 @@ const Order = () => {
             auth: auth.currentUser,
             tableName: 'redeem_history',
             columns: ['purches_type', 'purches_id', 'name', 'date', 'image', 'uid'],
-            values: ['deal', data.deal.id, data.deal.name, writeDate(new Date()), brand[0].image, data.user.uid]
+            values: ['deal', data.data.id, data.deal.name, writeDate(new Date()), brand[0].image, data.user.uid]
         }).then(d => {
             if (d.insertId) {
                 postData(url + '/updateData', {
@@ -339,13 +371,18 @@ const Order = () => {
                                     <thead>
                                         <tr>
                                             <th> Name </th>
+                                            <th> Email </th>
                                             <th> Phone </th>
                                             <th> {Checked} Name </th>
                                             {Checked=='Hotels'?(<th> Check In </th>):(<></>)}
                                             {Checked=='Hotels'?(<th> Check Out </th>):(<></>)}
+                                            {Checked=='Hotels'?(<th> Adults </th>):(<></>)}
+                                            {Checked=='Hotels'?(<th> Children </th>):(<></>)}
+                                            {Checked=='Hotels'?(<th> Room </th>):(<></>)}
                                             {Checked=='Hotels'?(<th> Veg </th>):(<></>)}
                                             {Checked=='Hotels'?(<th> Non Veg </th>):(<></>)}
                                             {Checked=='Hotels'?(<th> Additional Note </th>):(<></>)}
+                                            {Checked!='Hotels'?(<th> Brand Name </th>):(<></>)}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -411,12 +448,16 @@ const List = (props) => {
     return (
         <tr>
             <td> {doc.user.name} </td>
+            <td> {doc.user.email} </td>
             <td> {doc.user.phone} </td>
             <td>
                 {doc.hotel?doc.hotel.name:''}
             </td>
             <td> {convertDate(doc.data.check_in)} </td>
             <td> {convertDate(doc.data.check_out)} </td>
+            <td> {doc.data.adult} </td>
+            <td> {doc.data.children} </td>
+            <td> {doc.data.room} </td>
             <td> {doc.data.veg} </td>
             <td> {doc.data.non_veg} </td>
             <td> {doc.data.note} </td>
@@ -449,10 +490,12 @@ const List2 = (props) => {
     return (
         <tr>
             <td> {doc.user?doc.user.name:'...'} </td>
+            <td> {doc.user.email} </td>
             <td> {doc.user?doc.user.phone:'---'} </td>
             <td>
                 {doc.deal && doc.deal.name?doc.deal.name:'...'}
             </td>
+            <td>{doc.brand && doc.brand.name?doc.brand.name:'...'}</td>
             {
                 Visible == 1 ? (
                     <td style={{ width: '200px' }}></td>

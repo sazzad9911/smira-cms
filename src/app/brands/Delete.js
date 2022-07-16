@@ -56,7 +56,6 @@ const Delete = () => {
                       <tr>
                         <th> Logo </th>
                         <th> Name </th>
-                        <th> Address </th>
                         <th> Action </th>
                       </tr>
                     </thead>
@@ -171,8 +170,7 @@ const List = (props)=>{
       <img src={data.image} alt="user icon" />
     </td>
     <td> {data.name}</td>
-  <td> {data.address} </td>
-  <td> 
+
   {
       !Read?(
         <td>
@@ -188,7 +186,7 @@ const List = (props)=>{
         <></>
       )
     }
-   </td>
+  
  </tr>
   )
 }

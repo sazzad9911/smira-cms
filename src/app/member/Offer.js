@@ -15,16 +15,16 @@ import {
 } from "react-router-dom";
 import { MultiSelect } from "react-multi-select-component";
 
-const PopularRestaurant = () => {
+const Offer = () => {
     const [Name, setName]= React.useState()
     const [Details,setDetails]= React.useState()
     const [Files,setFiles]= React.useState()
-    const [Type,setType]= React.useState()
+    const [Type,setType]= React.useState('Restaurant')
     const [Error,setError]= React.useState()
     const [Action,setAction]= React.useState(false)
     const [Data, setData]= React.useState(null)
     const auth = getAuth(app)
-    const [Category,setCategory]= React.useState()
+    const [Category,setCategory]= React.useState('Restaurant')
     const [ImageSize,setImageSize]= React.useState(false)
     const brands=useSelector(state => state.brands)
     const [Options,setOptions]=React.useState()
@@ -40,17 +40,22 @@ const PopularRestaurant = () => {
       }
     },[brands])
     React.useEffect(() => {
-      postData(url + '/getData',{
-        tableName: 'restaurant', 
-    }).then(data=>{
-        if(Array.isArray(data)){
-            setData(data)
-        }
-    })
+        postData(url + '/getData',{
+            tableName: 'offer',
+            condition:`id=1`
+        }).then(data=>{
+            if(Array.isArray(data) && data.length!=0){
+                setData(data)
+                setName(data[0].name)
+                setDetails(data[0].details)
+            }else{
+              setData([])
+            }
+        })
     },[Action])
     const deleteData = (id) => {
         postData(url + '/deleteData', {
-            tableName: 'restaurant',
+            tableName: 'poster',
             condition:'id='+id,
         }).then(data => {
             console.log(data)
@@ -76,40 +81,37 @@ const PopularRestaurant = () => {
       }
     const save=()=>{
         if(!ImageSize){
-            setError("You can only add 1300*800 size image")
+            setError("Select 1300*800 image file")
             return;
         }
         if(!Files || !selected){
-            setError("Image and Brand field are can not be empty")
+            setError("Image and brands field are can not be empty")
             return;
         }
-        if(!Name){
-          setError("Banner should have a title")
-          return
-        }
-         //add those line
-         const array=JSON.parse(JSON.stringify(selected))
-         let text=null;
-         array.forEach(doc=>{
-           if(text){
-             text=text+','+doc.value
-           }else{
-             text=doc.value
-           }
-         })
-         //
+        //add those line
+        const array=JSON.parse(JSON.stringify(selected))
+        let text=null;
+        array.forEach(doc=>{
+          if(text){
+            text=text+','+doc.value
+          }else{
+            text=doc.value
+          }
+        })
+        //
         const data=new FormData()
         data.append('file', Files[0])
         Axios.post(url+'/uploadWithData',data).then(res=>{
           if(res.data.url){
-            postData(url + '/setData',{
+            postData(url + '/updateData',{
               auth: auth.currentUser,
-              tableName: 'restaurant',
-              columns: ['name','image','details','brands'],
-              values: [Name,res.data.url,Details,text]
+              tableName: 'offer',
+              columns: ['name','image','details','type','brands'],
+              values: [Name,res.data.url,Details,Type?Type:'',text],
+              condition:`id=1`
             }).then(result => {
               console.log(result);
-              if(result.insertId){
+              if(result.affectedRows){
                 setError('Image Saved.')
                 setAction(!Action)
               }else{
@@ -122,11 +124,11 @@ const PopularRestaurant = () => {
     return (
         <div>
         <div className="page-header">
-          <h3 className="page-title"> Doorstep Deals </h3>
+          <h3 className="page-title"> Favorite Categories </h3>
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item"><a href="!#" onClick={event => event.preventDefault()}>All</a></li>
-              <li className="breadcrumb-item active" aria-current="page">Restaurants</li>
+              <li className="breadcrumb-item active" aria-current="page">Poster</li>
             </ol>
           </nav>
         </div>
@@ -136,13 +138,13 @@ const PopularRestaurant = () => {
               <div className="card-body">
                 <h4 className="card-title">Information</h4>
                 <form className="form-sample">
-                  <p className="card-description"> Add restaurant banner for single brand </p>
+                  <p className="card-description"> Add Poster with brand list </p>
                   <div className="row">
                     <div className="col-md-6">
                       <Form.Group className="row">
                         <label className="col-sm-3 col-form-label">Title</label>
                         <div className="col-sm-9">
-                        <Form.Control placeholder='title of the banner' onChange={(e)=>setName(e.target.value)}  type="text" />
+                        <Form.Control value={Name} placeholder='optional' onChange={(e)=>setName(e.target.value)}  type="text" />
                         </div>
                       </Form.Group>
                     </div>
@@ -150,15 +152,15 @@ const PopularRestaurant = () => {
                     <Form.Group className="row">
                         <label className="col-sm-3 col-form-label">Details</label>
                         <div className="col-sm-9">
-                        <Form.Control onChange={(e)=>setDetails(e.target.value)} placeholder='optional' type="text" />
+                        <Form.Control value={Details} onChange={(e)=>setDetails(e.target.value)} placeholder='optional' type="text" />
                         </div>
                       </Form.Group>
                     </div>
                   </div>
                 <div className="row">
                     <div className="col-md-6">
-                    <Form.Group className="row">
-                      <label className="col-sm-3 col-form-label">Select Brands</label>
+                      <Form.Group className="row">
+                        <label className="col-sm-3 col-form-label">Select Brands</label>
                         <div className="col-sm-9">
                         <div style={{display:'flex',flexWrap:'wrap'}}>{JSON.parse(JSON.stringify(selected)).map((doc,i)=>(
                           <p style={{margin:'5px'}} key={i}>{doc.label}</p>
@@ -181,7 +183,7 @@ const PopularRestaurant = () => {
                     </div>
                     <div className="col-md-6">
                       <Form.Group className="row">
-                        <label className="col-sm-3 col-form-label">Add Banner Image-1300*800</label>
+                        <label className="col-sm-3 col-form-label">Add Poster Image-1300*800</label>
                         <div className="col-sm-9">
                         <Form.Control onChange={(e)=>{
                             setFiles(e.target.files)
@@ -208,32 +210,29 @@ const PopularRestaurant = () => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title">Information</h4>
-                {/* <Form.Group className="row">
-                        <label className="col-sm-3 col-form-label">Select Category</label>
+                <Form.Group className="row">
+                        {/* <label className="col-sm-3 col-form-label">Select Category</label>
                         <div className="col-sm-9">
                           <select onChange={(e) =>{
                             setCategory(e.target.value);
                           }} className="form-control">
-                        <option value=''>Select Brand</option>
-                          {
-                            brands?(
-                                brands.map((doc, i)=>(
-                                    <option key={i} value={doc.id}>{doc.name}</option>
-                                ))
-                            ):(
-                                <option value=''>No Brands</option>
-                            )
-                          }
+                         <option value='Restaurant'>Restaurant</option>
+                          <option value='Games'>Games</option>
+                          <option value='Camping'>Camping</option>
+                          <option value='Travel'>Travel</option>
+                          <option value='Shopping'>Shopping</option>
+                          <option value='Health'>Health</option>
+                          <option value='Services'>Services</option>
+                          <option value='Spa & Salons'>Spa & Salons</option>
                           </select>
-                        </div>
-                      </Form.Group> */}
+                        </div> */}
+                      </Form.Group>
                 <div className="table-responsive">
                   <table className="table table-striped">
                     <thead>
                       <tr>
                         <th> Image </th>
                         <th> Title </th>
-                        <th> Action </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -246,13 +245,6 @@ const PopularRestaurant = () => {
                                 <img src={doc.image} alt={doc.name} />
                                 </td>
                                 <td>{doc.name}</td>
-                                <td>
-                                <button className='btn btn-gradient-danger btn-rounded btn-fw' onClick={()=>{
-                                    deleteData(doc.id)
-                                }}>
-                                Delete
-                                </button>
-                                </td>
                                 </tr>
                             ))
                             ):(
@@ -271,4 +263,4 @@ const PopularRestaurant = () => {
     );
 };
 
-export default PopularRestaurant;
+export default Offer;

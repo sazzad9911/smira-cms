@@ -36,6 +36,7 @@ const Update = () => {
   const hotels = useSelector(state => state.hotels)
   const [Near,setNear]= React.useState()
   const [Phone, setPhone]= React.useState()
+  const [Remember, setRemember]= React.useState()
   //console.log(addresses)
   const auth = getAuth(app)
 
@@ -114,7 +115,7 @@ const Update = () => {
       setError('Done. You can reload your page now');
         setTimeout(() => {
           window.location.reload()
-        },300);
+        },300); 
     })
    
   }
@@ -411,10 +412,22 @@ const Update = () => {
                     <Form.Group className="row">
                       <label className="col-sm-3 col-form-label">Description</label>
                       <div className="col-sm-9">
-                        <Form.Control value={Description} placeholder='Description' onChange={(e) => setDescription(e.target.value)} type="text" />
+                        <textarea value={Description}className="form-control" rows="4" placeholder='Description' onChange={(e) => setDescription(e.target.value)} type="text">
+                        </textarea>
                       </div>
                     </Form.Group>
                   </div>
+                  <div className="col-md-6">
+                    <Form.Group className="row">
+                      <label className="col-sm-3 col-form-label">Things to remember</label>
+                      <div className="col-sm-9">
+                        <textarea value={Remember} className="form-control" rows="4" placeholder='Things to remember' onChange={(e) => setRemember(e.target.value)} type="text">
+                        </textarea>
+                      </div>
+                    </Form.Group>
+                  </div>
+                </div> 
+                <div className="row">
                   <div className="col-md-6">
                     <Form.Group className="row">
                       <label className="col-sm-3 col-form-label">Contact Number</label>

@@ -20,7 +20,7 @@ const Add = () => {
     const [Location,setLocation]= React.useState()
 
     const save=() => {
-      if(!Name || !Address || !Phone || !File || !Type || !Location){
+      if(!Name || !Address || !File || !Type ){
         setError('Please fill all the required fields')
         return
       }
@@ -37,8 +37,8 @@ const Add = () => {
           postData(url + '/setData',{
             auth: auth.currentUser,
             tableName: 'brands',
-            columns: ['name','image','type','popularity','address','phone','location'],
-            values: [Name.replace(/[^\w\s]/gi, ''),res.data.url,Type,0,Address,Phone,Location]
+            columns: ['name','image','type','popularity','phone','location','outlets'],
+            values: [Name.replace(/[^\w\s]/gi, ''),res.data.url,Type,0,Phone,Location,Address]
           }).then(result => {
             console.log(result);
             if (result.insertId){
@@ -116,19 +116,19 @@ const Add = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      {/* <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Phone Number</label>
+                          <label className="col-sm-3 col-form-label">Main Branch Phone Number</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setPhone(e.target.value)} placeholder='eg. +913020394930' type="number" />
                           </div>
                         </Form.Group>
-                      </div>
+                      </div> */}
                       <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Address</label>
+                          <label className="col-sm-3 col-form-label">Number of Outlets</label>
                           <div className="col-sm-9">
-                          <Form.Control onChange={(e)=>setAddress(e.target.value)} placeholder='address' type="text" />
+                          <Form.Control onChange={(e)=>setAddress(e.target.value)} placeholder='eg. 3' type="number" />
                           </div>
                         </Form.Group>
                       </div>
@@ -143,14 +143,14 @@ const Add = () => {
                         </Form.Group>
                         
                       </div>
-                      <div className="col-md-6">
+                      {/* <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Location</label>
+                          <label className="col-sm-3 col-form-label">Main Branch Location</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setLocation(e.target.value)} placeholder='give map link.'  type="text" />
                           </div>
                         </Form.Group>
-                      </div>
+                      </div> */}
                     </div>
                   </form>
                   {error?(
