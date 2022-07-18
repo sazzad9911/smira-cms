@@ -40,9 +40,12 @@ const AddMember = () => {
                 }).then(data => {
                     setError('Successful! Member has added successfully.')
             }).catch(err => {
-                setError('Email address is invalid.')
+                setError('Network request failed. There some issue. Please contact with developer.')
                 console.log(err.message)
             })     
+        }).catch(err => {
+          setError('Invalid email/password or your email has already used')
+          console.log(err.message)
         })
     }
    
