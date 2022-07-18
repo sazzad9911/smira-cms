@@ -81,6 +81,7 @@ const Outlets = lazy(() => import('./brands/Outlets.js'))
 const Notification = lazy(() => import('./customer/Notificaltion.js'))
 const Offer= lazy(() => import('./member/Offer.js'))
 const Offer2 = lazy(() => import('./member/Offer2.js'))
+const AddMember = lazy(() =>import('./member/AddMember.js'))
 
 
 class AppRoutes extends Component {
@@ -210,7 +211,8 @@ class AppRoutes extends Component {
           <Route path="/posters/add" component={ AddSlider } />
           <Route path="/posters/delete" component={DeleteSlider } />
           <Route path="/posters/update" component={ UpdateSlider } />
-          <Route path="/AllMember" component={ AllMember } />
+          <Route path="/member/AllMember" component={ AllMember } />
+          <Route path="/member/add" component={ AddMember } />
           <Route path="/hotels/add" component={ AddHotel } />
           <Route path="/hotels/delete" component={ DeleteHotel } />
           <Route path="/hotels/update/:id" component={ UpdateHotel } />

@@ -58,13 +58,13 @@ class Sidebar extends Component {
       { path:'/promo', state:'promo'},
       { path:'/restaurants', state:'restaurants'},
       { path:'/messages',state:'messages'},
-      { path:'/AllMember', state:'AllMember'},
       { path:'/discount', state:'discount'},
       { path:'/posters', state:'posters'},
       { path:'/flash', state:'flash'},
       { path:'/send_message', state:'send_message'},
       { path:'/offer', state:'offer'},
-      { path:'/new', state:'new'}
+      { path:'/new', state:'new'},
+      { path:'/member', state:'member'},
     ];
 
     dropdownPaths.forEach((obj => {
@@ -98,11 +98,29 @@ class Sidebar extends Component {
               <i className="mdi mdi-home menu-icon"></i>
             </Link>
           </li>
-          <li className={this.isPathActive('/AllMember') ? 'nav-item active' : 'nav-item'}>
+          {/* <li className={this.isPathActive('/AllMember') ? 'nav-item active' : 'nav-item'}>
             <Link className="nav-link" to="/AllMember">
               <span className="menu-title">Member List</span>
               <i className="mdi mdi-account menu-icon"></i>
             </Link>
+          </li> */}
+          <li className={this.isPathActive('/member') ? 'nav-item active' : 'nav-item'}>
+            <div className={this.state.member ? 'nav-link menu-expanded' : 'nav-link'} onClick={() =>
+              this.toggleMenuState('member')} data-toggle="collapse">
+              <span className="menu-title"><>Members</></span>
+              <i className="menu-arrow"></i>
+              <i className="mdi mdi-account menu-icon"></i>
+            </div>
+            <Collapse in={this.state.member}>
+              <ul className="nav flex-column sub-menu">
+              <li className="nav-item"> <Link className={
+                  this.isPathActive('/member/AllMember') ? 'nav-link active' : 'nav-link'}
+                  to="/member/AllMember">Member List</Link></li>
+                <li className="nav-item"> <Link className={
+                  this.isPathActive('/member/add') ? 'nav-link active' : 'nav-link'}
+                  to="/member/add"><>Add Member</></Link></li>
+              </ul>
+            </Collapse>
           </li>
           <li className={this.isPathActive('/customer') ? 'nav-item active' : 'nav-item'}>
             <Link className="nav-link" to="/customer/order">

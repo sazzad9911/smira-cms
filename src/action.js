@@ -98,3 +98,18 @@ export const writeDate = (date) => {
     
     return date
 }
+export const dateDifference =(newDate, oldDate)=>{
+    const reminding = (new Date(oldDate).getTime() - new Date(newDate).getTime()) / (1000 * 3600 * 24);
+    return reminding.toFixed(0)
+}
+export const visualDate=(date)=>{
+    date=new Date(date)
+    if(date.getMonth()<10){
+        date=date.getFullYear()+ '-' +'0' + (date.getMonth() + 1) + '-' + date.getDate()
+    }else{
+        date=date.getFullYear()+ '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    }
+    
+    return date
+
+}

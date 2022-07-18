@@ -1,6 +1,6 @@
 import React from 'react';
 import {useParams} from 'react-router-dom'
-import {postData,url} from './../../action'
+import {postData,url,writeDate,dateDifference,visualDate} from './../../action'
 import { Form } from 'react-bootstrap';
 import { getAuth } from 'firebase/auth';
 import app from './../../firebase';
@@ -12,6 +12,8 @@ const MemberAction = () => {
     const [error,setError]= React.useState()
     const [Plans,setPlans]=React.useState()
     const [Select,setSelect]=React.useState()
+    const [Starting,setStarting]=React.useState()
+    const [Ending,setEnding]=React.useState()
 
     React.useEffect(() => {
         postData(url + '/getData', {
@@ -23,6 +25,8 @@ const MemberAction = () => {
                     setSelect('non')
                 }else{
                     setSelect(data[0].membership_type)
+                    setStarting(visualDate(data[0].starting_date))
+                    setEnding(visualDate(data[0].ending_date))
                 }
                 return setData(data)
             }
@@ -59,15 +63,23 @@ const MemberAction = () => {
                 console.log(response)
             })
         }else{
-            let time=Plans.filter(p=>p.type==Select)[0].time;
-            let date=new Date()
-            let start=`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-            let ending=`${date.getFullYear()+time}-${date.getMonth()+1}-${date.getDate()}`;
+          if(!Starting ||!Ending){
+            setError("Please select a starting or ending date.")
+            return
+          }
+          if(dateDifference(Starting, Ending)<0){
+            setError("Invalid! Starting date must be previous from ending date")
+            return
+          }
+            // let time=Plans.filter(p=>p.type==Select)[0].time;
+            // let date=new Date()
+            // let start=`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+            // let ending=`${date.getFullYear()+time}-${date.getMonth()+1}-${date.getDate()}`;
             postData(url + '/updateData',{
                 auth: auth.currentUser,
                 tableName: 'user',
                 columns: ['membership_type','starting_date','ending_date'],
-                values: [Select,start,ending],
+                values: [Select,writeDate(new Date(Starting)),writeDate(new Date(Ending))],
                 condition: `uid='${uid}'`
             }).then(response => {
                 if(response.affectedRows){
@@ -124,7 +136,24 @@ const MemberAction = () => {
                       </div>
                       
                     </div>
-                    
+                    <div className="row">
+                    <div className="col-md-6">
+                      <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Starting Date</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Starting} onChange={(e)=>setStarting(e.target.value)} placeholder='' type="date" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                      <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Ending Date</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Ending} onChange={(e)=>setEnding(e.target.value)} placeholder='' type="date" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                    </div>
                     {error?(
                     <div className="alert alert-primary" role="alert">{error}</div>
                   ):(

@@ -104,7 +104,7 @@ const AllMember = () => {
                                                         <td> {doc.phone ? doc.phone : '--'} </td>
                                                         <td>{doc.creationTime?convertDate(doc.creationTime):''}</td>
                                                         <td>
-                                                            <Link to={'member_action/'+doc.uid}>
+                                                            <Link to={'/member_action/'+doc.uid}>
                                                                 Change Plan
                                                             </Link>
                                                         </td>
