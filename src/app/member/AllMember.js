@@ -84,6 +84,7 @@ const AllMember = () => {
                                             <th> Membership </th>
                                             <th> Email </th>
                                             <th> Phone </th>
+                                            <th>Membership Expiry</th>
                                             <th>Creation Date </th>
                                             <th> Action</th>
                                         </tr>
@@ -102,6 +103,7 @@ const AllMember = () => {
                                                         doc.membership_type.match(/platinum/)?'SCP':doc.membership_type.match(/diamond/)?'SCD':'NON':''} </td>
                                                         <td> {doc.email ? doc.email : '--'} </td>
                                                         <td> {doc.phone ? doc.phone : '--'} </td>
+                                                        <td>{doc.ending_date?convertDate(doc.ending_date):''}</td>
                                                         <td>{doc.creationTime?convertDate(doc.creationTime):''}</td>
                                                         <td>
                                                             <Link to={'/member_action/'+doc.uid}>
