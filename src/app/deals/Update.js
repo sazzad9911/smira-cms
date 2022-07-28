@@ -41,7 +41,10 @@ const Update = () => {
     const deals = useSelector(state => state.deals)
     const [text,setText]= React.useState()
     const [times,setTimes] =React.useState()
-    const [Description, setDescription]= React.useState()
+    const [ValidFor,setValidFor]= React.useState()
+   const [Used,setUsed]= React.useState()
+   const [Remember, setRemember]= React.useState()
+   const [Application,setApplication]= React.useState()
 
     React.useEffect(() => {
       if(deals&&brands){
@@ -59,7 +62,10 @@ const Update = () => {
         setValid(writeDate(new Date(arr[0].till)))
         setText("<p>"+arr[0].days+"</p>")
         setTimes("<p>"+arr[0].time+"</p>")
-        setDescription(arr[0].description)
+        setValidFor(arr[0].valid)
+        setUsed(arr[0].used)
+        setApplication(arr[0].application)
+        setRemember(arr[0].remember)
       }
     },[deals+brands])
 
@@ -111,8 +117,8 @@ const Update = () => {
       postData(url + '/updateData',{
         auth:auth.currentUser,
         tableName: 'deals',
-        columns: [`name`, `brand_id`, `brand`, `code`, `conditions`, `price`, `time`, `days`, `type`,`forr`,`till`,`discount`,`description`],
-        values: [Name,Brands[0].id,Brands[0].name,Code,Conditions,Price?Price:'',OpeningTime,OpeningDays,Type,For,Valid,Discount?Discount:'',Description?Description:''],
+        columns: [`name`, `brand_id`, `brand`, `code`, `conditions`, `price`, `time`, `days`, `type`,`forr`,`till`,`discount`,`used`,`valid`,`application`,`remember`],
+        values: [Name,Brands[0].id,Brands[0].name,Code,Conditions,Price?Price:'',OpeningTime,OpeningDays,Type,For,Valid,Discount?Discount:'',Used?Used:'',ValidFor?ValidFor:'',Application?Application:'',Remember?Remember:''],
         condition:'id='+ id
       }).then(result=>{
           //alert('Successfully Update data')
@@ -236,7 +242,7 @@ const Update = () => {
                     } }
                     onChange={ ( event, editor ) => {
                         const data = editor.getData();
-
+                        
                         setOpeningDays(data.replace(/<\/?[^>]+(>|$)/g, ""))
                         
                     } }
@@ -267,8 +273,7 @@ const Update = () => {
                     } }
                     onChange={ ( event, editor ) => {
                         const data = editor.getData();
-
-                        setOpeningTime(data.replace(/<\/?[^>]+(>|$)/g, ""))
+                        setOpeningTime(data.replace(/<\/?[^>]+(>|$)|&nbsp;/g, " "))
                         
                     } }
                     onBlur={ ( event, editor ) => {
@@ -347,34 +352,45 @@ const Update = () => {
                         </Form.Group>
                       </div>
                       <div className="col-md-6">
-                      <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Description</label>
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Valid for</label>
                           <div className="col-sm-9">
-                          <CKEditor
-                             editor={ ClassicEditor }
-                             data={Description}
-                             onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-
-                        setDescription(data)
-                        
-                    } }
-                    onBlur={ ( event, editor ) => {
-                        //console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                       // console.log( 'Focus.', editor );
-                    } }
-                />
+                          <Form.Control value={ValidFor} onChange={(e)=>setValidFor(e.target.value)} placeholder='Valid for whose'  type="text" />
                           </div>
                         </Form.Group>
-                        
                       </div>
                       </div>
+                      <div className="row">
+                     
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Application for</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Application} onChange={(e)=>setApplication(e.target.value)} placeholder='type of your deal'  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">How to use</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Used} onChange={(e)=>setUsed(e.target.value)} placeholder='How to use this offer'  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                  </div>
+                  <div className="row">
+                     
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Things to remember</label>
+                          <div className="col-sm-9">
+                          <Form.Control value={Remember} onChange={(e)=>setRemember(e.target.value)} placeholder='type things to remember'  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                    
+                  </div>
                     
                     {Error?(
                     <div className="alert alert-primary" role="alert">{Error}</div>

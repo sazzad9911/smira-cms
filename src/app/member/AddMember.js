@@ -20,7 +20,7 @@ const AddMember = () => {
     const [Location,setLocation]= React.useState()
     const [Password,setPassword]= React.useState()
     const [Plans,setPlans]=React.useState()
-    const [Select,setSelect]=React.useState()
+    const [Select,setSelect]=React.useState('non')
     const [Starting,setStarting]=React.useState()
     const [Ending,setEnding]=React.useState()
     const [membership,setMembership]= React.useState()
@@ -55,11 +55,37 @@ const AddMember = () => {
         setError('Password must be at least 6 characters')
         return
     }
+    if(!Select){
+      setError('Invalid selection')
+      return
+    }
+    if(Select=='non'){
+      setError('Please wait...')
+        createUserWithEmailAndPassword(auth, Address, Password)
+            .then(userCredentials => {
+                postData(url + '/setData', {
+                    auth: userCredentials.user,
+                    tableName: 'user',
+                   columns: ['name', 'email', 'uid'],
+                   values:[Name,Address,userCredentials.user.uid]
+                }).then(data => {
+                  setError('Successful! Member has added successfully.')
+            }).catch(err => {
+                setError('Network request failed. There some issue. Please contact with developer.')
+                console.log(err.message)
+            }) 
+            
+        }).catch(err => {
+          setError('Invalid email/password or your email has already used')
+          console.log(err.message)
+        })
+        return
+    }
     if(!Starting || !Ending){
       setError('Date fields are invalid')
       return
     }
-    if(!membership || !Select){
+    if(!membership){
       setError('Membership is required')
       return
     }
@@ -230,7 +256,9 @@ const AddMember = () => {
                         </Form.Group>
                       </div> */}
                     </div>
-                    <div className="row">
+                    {
+                      Select!='non'?(
+                        <div className="row">
                     <div className="col-md-6">
                       <Form.Group className="row">
                           <label className="col-sm-3 col-form-label">Starting Date</label>
@@ -248,6 +276,8 @@ const AddMember = () => {
                         </Form.Group>
                       </div>
                     </div>
+                      ):(<></>)
+                    }
                   </form>
                   {error?(
                     <div className="alert alert-primary" role="alert">{error}</div>

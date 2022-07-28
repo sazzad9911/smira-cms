@@ -15,6 +15,7 @@ const MemberAction = () => {
     const [Starting,setStarting]=React.useState()
     const [Ending,setEnding]=React.useState()
     const [membership,setMembership]= React.useState()
+    const [newMembership,setNewMembership]=React.useState()
 
     React.useEffect(() => {
         postData(url + '/getData', {
@@ -39,6 +40,8 @@ const MemberAction = () => {
             tableName: 'membership'
         }).then(data => {
             if(Array.isArray(data)&& data.length>0){
+              setMembership(data.filter(p=>p.type ==Select)[0])
+              setNewMembership(data.filter(p=>p.type ==Select)[0])
                return setPlans(data)
             }
             console.log(data.message)
@@ -63,11 +66,8 @@ const MemberAction = () => {
             setError("Invalid selection.")
             return
         }
-        if(!membership){
-          setError("Invalid membership")
-          return
-        }
         if(Select=='non'){
+
             postData(url + '/query',{
                 query:`UPDATE user SET membership_type=NULL,starting_date=NULL,ending_date=NULL WHERE uid='${uid}'`
             }).then(response => {
@@ -78,6 +78,10 @@ const MemberAction = () => {
                 console.log(response)
             })
         }else{
+          if(!membership){
+            setError("Invalid membership")
+            return
+          }
           if(!Starting ||!Ending){
             setError("Please select a starting or ending date.")
             return
@@ -86,6 +90,7 @@ const MemberAction = () => {
             setError("Invalid! Starting date must be previous from ending date")
             return
           }
+          setError('Please wait...')
             // let time=Plans.filter(p=>p.type==Select)[0].time;
             // let date=new Date()
             // let start=`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
@@ -93,8 +98,8 @@ const MemberAction = () => {
             postData(url + '/updateData',{
                 auth: auth.currentUser,
                 tableName: 'user',
-                columns: ['membership_type','starting_date','ending_date'],
-                values: [Select,writeDate(new Date(Starting)),writeDate(new Date(Ending))],
+                columns: ['membership_type','starting_date','ending_date','paid'],
+                values: [Select,writeDate(new Date(Starting)),writeDate(new Date(Ending)),''],
                 condition: `uid='${uid}'`
             }).then(response => {
                 if(response.affectedRows){
@@ -102,6 +107,9 @@ const MemberAction = () => {
                 }
                 setError(response.message)
             })
+            if(membership==newMembership){
+              return
+            }
             let codes=null;
         if(membership.account!='no'){
             let account=parseInt(membership.account)
@@ -209,7 +217,9 @@ const MemberAction = () => {
                       </div>
                       
                     </div>
-                    <div className="row">
+                    {
+                      Select!='non'?(
+                        <div className="row">
                     <div className="col-md-6">
                       <Form.Group className="row">
                           <label className="col-sm-3 col-form-label">Starting Date</label>
@@ -227,6 +237,8 @@ const MemberAction = () => {
                         </Form.Group>
                       </div>
                     </div>
+                      ):(<></>)
+                    }
                     {error?(
                     <div className="alert alert-primary" role="alert">{error}</div>
                   ):(

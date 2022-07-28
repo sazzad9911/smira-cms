@@ -31,7 +31,10 @@ const Add = () => {
     const [Valid,setValid]= React.useState()
     const [PromoCode,setPromoCode]= React.useState(true)
     const [ImageSize,setImageSize]= React.useState(false)
-    const [Description, setDescription]= React.useState()
+   const [ValidFor,setValidFor]= React.useState()
+   const [Used,setUsed]= React.useState()
+   const [Remember, setRemember]= React.useState()
+   const [Application,setApplication]= React.useState()
 
     const imageSize=async(height,width,file)=>{
       var url = URL.createObjectURL(file[0]);
@@ -67,8 +70,8 @@ const Add = () => {
       postData(url + '/setData',{
         auth:auth.currentUser,
         tableName: 'deals',
-        columns: [`name`, `brand_id`, `image`, `date`, `popularity`, `brand`, `discount`, `code`, `conditions`, `price`, `time`, `days`, `type`,`forr`,`till`,`description`],
-        values: [Name,Brands[0].id,"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.dreamstime.com%2Fphotos-images%2Fpizza.html&psig=AOvVaw3Gf0VulOmM9_pZijRT1dXT&ust=1653378505707000&source=images&cd=vfe&ved=0CAkQjRxqFwoTCKiIlYeR9fcCFQAAAAAdAAAAABAD",writeDate(new Date()),popularity,Brands[0].name,Discount?Discount:'',Code,Conditions,Price?Price:'',OpeningTime.replace(/&nbsp;/g, ','),OpeningDays.replace(/&nbsp;/g, ','),"Pizza",For,Valid,Description?Description:'']
+        columns: [`name`, `brand_id`, `image`, `date`, `popularity`, `brand`, `discount`, `code`, `conditions`, `price`, `time`, `days`, `type`,`forr`,`till`,`used`,`valid`,`application`,`remember`],
+        values: [Name,Brands[0].id,"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.dreamstime.com%2Fphotos-images%2Fpizza.html&psig=AOvVaw3Gf0VulOmM9_pZijRT1dXT&ust=1653378505707000&source=images&cd=vfe&ved=0CAkQjRxqFwoTCKiIlYeR9fcCFQAAAAAdAAAAABAD",writeDate(new Date()),popularity,Brands[0].name,Discount?Discount:'',Code,Conditions,Price?Price:'',OpeningTime.replace(/&nbsp;/g, ','),OpeningDays.replace(/&nbsp;/g, ','),"Pizza",For,Valid,Used?Used:'',ValidFor?ValidFor:'',Application?Application:'',Remember?Remember:'']
       }).then(result=>{
         if(result.insertId){
           //alert('Successfully Update data')
@@ -130,7 +133,7 @@ const Add = () => {
                     <div className="row">
                       <div className="col-md-6">
                         <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Title</label>
+                          <label className="col-sm-3 col-form-label">Title*</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setName(e.target.value)}  type="text" />
                           </div>
@@ -138,7 +141,7 @@ const Add = () => {
                       </div>
                       <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Valid for</label>
+                          <label className="col-sm-3 col-form-label">Valid for*</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setFor(e.target.value)} placeholder='who can get it.' type="text" />
                           </div>
@@ -177,7 +180,7 @@ const Add = () => {
                       }
                       <div className="col-md-6">
                         <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Conditions</label>
+                          <label className="col-sm-3 col-form-label">Conditions*</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setConditions(e.target.value)} placeholder='type all your condition' type="text" />
                           </div>
@@ -206,7 +209,7 @@ const Add = () => {
                     <div className="row">
                       <div className="col-md-6">
                         <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Opening Days</label>
+                          <label className="col-sm-3 col-form-label">Opening Days*</label>
                           <div className="col-sm-9">
                           <CKEditor
                              editor={ ClassicEditor }
@@ -233,7 +236,7 @@ const Add = () => {
                       </div>
                       <div className="col-md-6">
                       <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Opening Times</label>
+                          <label className="col-sm-3 col-form-label">Opening Times*</label>
                           <div className="col-sm-9">
                           <CKEditor
                              editor={ ClassicEditor }
@@ -260,7 +263,7 @@ const Add = () => {
                         
                       </div>
                     </div>
-                    <div className="row">
+                  <div className="row">
                       {
                         /*
                         <div className="col-md-6">
@@ -275,41 +278,52 @@ const Add = () => {
                       }
                       <div className="col-md-6">
                         <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Valid till</label>
+                          <label className="col-sm-3 col-form-label">Valid till*</label>
                           <div className="col-sm-9">
                           <Form.Control onChange={(e)=>setValid(e.target.value)} placeholder='type of your deal'  type="date" />
                           </div>
                         </Form.Group>
                       </div>
                       <div className="col-md-6">
-                      <Form.Group className="row">
-                          <label className="col-sm-3 col-form-label">Description</label>
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Valid for</label>
                           <div className="col-sm-9">
-                          <CKEditor
-                             editor={ ClassicEditor }
-                             data={Description}
-                             onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-
-                        setDescription(data)
-                        
-                    } }
-                    onBlur={ ( event, editor ) => {
-                        //console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                       // console.log( 'Focus.', editor );
-                    } }
-                />
+                          <Form.Control onChange={(e)=>setValidFor(e.target.value)} placeholder='Valid for whose'  type="text" />
                           </div>
                         </Form.Group>
-                        
                       </div>
+                  </div>
+                  <div className="row">
+                     
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Application for</label>
+                          <div className="col-sm-9">
+                          <Form.Control onChange={(e)=>setApplication(e.target.value)} placeholder='type of your deal'  type="text" />
+                          </div>
+                        </Form.Group>
                       </div>
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">How to use</label>
+                          <div className="col-sm-9">
+                          <Form.Control onChange={(e)=>setUsed(e.target.value)} placeholder='How to use this offer'  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                  </div>
+                  <div className="row">
+                     
+                      <div className="col-md-6">
+                        <Form.Group className="row">
+                          <label className="col-sm-3 col-form-label">Things to remember</label>
+                          <div className="col-sm-9">
+                          <Form.Control onChange={(e)=>setRemember(e.target.value)} placeholder='type things to remember'  type="text" />
+                          </div>
+                        </Form.Group>
+                      </div>
+                    
+                  </div>
                     <div className="row">
                       <div className="col-md-6">
                         <Form.Group className="row">

@@ -140,6 +140,12 @@ const List = (props)=>{
       }).then((doc) => {
         console.log(doc)
       })
+      postData(url + '/deleteData',{
+        tableName: 'outlets',
+        condition:'brand_id='+ id
+      }).then((doc) => {
+        console.log(doc)
+      })
       postData(url + '/getData',{
         tableName: 'brands',
       }).then((doc) =>{

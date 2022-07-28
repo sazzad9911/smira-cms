@@ -34,9 +34,11 @@ const Notificaltion = () => {
     }).then(data => {
       if (Array.isArray(data)) {
         let arr=[]
+        let count=0;
         data.forEach((doc, i)=>{
-          if(doc.token){
+          if(doc.token && count<500){
             arr.push({ label: doc.name, value: doc.uid })
+            count++;
           }
         })
         setOptions(arr)
@@ -57,8 +59,8 @@ const Notificaltion = () => {
     array.forEach((doc,i) => {
       newArr.push(doc.value)
     })
-    console.log(newArr)
-    postData(url + '/sendMessages',{
+    
+    postData(url+'/sendMessages',{
         title:Name,
         body:Details,
         uid:newArr
@@ -70,6 +72,8 @@ const Notificaltion = () => {
         }else{
           setError(result.message)
         }
+      }).catch(error => {
+        console.log(error.message);
       })
   }
   

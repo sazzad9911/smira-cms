@@ -2,7 +2,7 @@ import React from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { postData, url, setHotelBooking, convertDate, writeDate,setBookAppointment } from '../../action';
+import { postData, url, setHotelBooking, convertDate, writeDate,setBookAppointment,bookingConfirm,bookingReject } from '../../action';
 import { getAuth } from 'firebase/auth';
 import app from './../../firebase';
 
@@ -139,46 +139,9 @@ const Order = () => {
             postData(url + '/sendEmail',{
                 to:user[0].email,
                 subject:'Your Booking Request has been confirmed - Smira Club',
-                text:`<p>Hello <b> ${user[0].name}</b></p>
-                <p>This email is to confirm your booking at-</p> 
-
-               <p>Hotel name: ${data.hotel.name}</p>
-               <p> Hotel location: ${data.hotel.address}</p>
-               <p> Total number of guests: ${data.data.adult+data.data.children}</p>
-               <p>Number of kids below 5 years: ${data.data.children} </p>
-               <p>Number of rooms: ${data.data.room}</p>
-               <p> Food (Breakfast and Dinner unlimited): <b>${data.data.veg}</b> Veg, ${data.data.non_veg} Non-Veg</p>
-               <p> Amenities: <b>${data.hotel.conditions}</b></p>
-               <p>Check-in date: ${convertDate(data.data.check_in)}</p>
-               <p> Check-out date: ${convertDate(data.data.check_out)}</p>
-                
-                <p>If you have any inquiries, please do not hesitate to contact us.</p>
-                
-               <p> We are looking forward to your visit and hope that you enjoy your stay.</p>
-                
-                
-               <p> Best regards, </p>
-               <p> Smira Club</p>
-                 
-               <b> Smira Services - ‘A sweet memory is really affordable’ </b>
-                 
-                 
-                 
-                 
-                <b>Smira Sevices Pvt. Ltd. </b>
-                <p>Ranjit Studio Compound, </p>
-               <p> Ground & 1st Floor, </p>
-               <p> M-Block, Plot No. 115, </p>
-               <p> Dada Saheb Phalke Marg, </p>
-               <p>  Opp. Bharatkshetra, Hindmata, </p>
-               <p> Dadar East, Mumbai, </p>
-               <p> Maharashtra 400014 </p>
-                 
-               <b> Contact No. </b>
-               <p> 9833733477</p>
-               <p>9833733977</p>
-               <p> Email - support@smira.club</p>
-                `
+                text:bookingConfirm(data.hotel.name,data.hotel.address,data.data.room,
+                    (data.data.adult+data.data.children),data.data.children,
+                    convertDate(data.data.check_in),convertDate(data.data.check_out),data.data.veg,data.data.non_veg)
             }).then(result => {
                 console.log(result);
             })
@@ -215,33 +178,9 @@ const Order = () => {
             postData(url + '/sendEmail',{
                 to:user[0].email,
                 subject:'Your Booking Request has not been confirmed - Smira Club',
-                text:`<p>Hello <b>${user[0].name}</b>,</p>
-                <p>We had received your request for a booking at- 
-                <p>Hotel location: ${data.hotel.address}</p>
-                <p>Total number of guests: ${data.data.adult+data.data.children} </p>
-                <p>Number of kids below 5 years: ${data.data.children}</p>
-                <p>Number of rooms: ${data.data.room}</p>
-                <p>Check-in date: ${convertDate(data.data.check_in)}</p>
-                <p>Check-out date: ${convertDate(data.data.check_out)}</p>
-                <p>We are very pleased to know that you want a booking with us, however, we regret to inform you that your request has <b>NOT BEEN CONFIRMED</b> due to non-availability of rooms or some technical reasons.</p>
-                <p>Sorry for the inconvenience! We assure you that we will be available in the future for you whenever you wish to make a booking.</p>
-                <p>Best regards, 
-                <p>Smira Club
-                <b>Smira Services - ‘A sweet memory is really affordable’ </b>
-                <p>Smira Services Pvt. Ltd. </p>
-                <p>Ranjit Studio Compound, </p>
-                <p>Ground & 1st Floor, </p>
-                <p>M-Block, Plot No. 115, </p>
-                <p>Dada Saheb Phalke Marg, </p>
-                <p>Opp. Bharatkshetra, Hindmata,</p> 
-                <p>Dadar East, Mumbai, </p>
-                <p>Maharashtra 400014 </p>
- 
-                <b>Contact No.</b> 
-                <p>9833733477</p>
-                <p>9833733977</p>
-                <p>Email - support@smira.club</p>
-                `
+                text:bookingReject(data.hotel.name,data.hotel.address,data.data.room,
+                    (data.data.adult+data.data.children),data.data.children,
+                    convertDate(data.data.check_in),convertDate(data.data.check_out),data.data.veg,data.data.non_veg)
             }).then(result => {
                 console.log(result);
             })
@@ -373,6 +312,7 @@ const Order = () => {
                                             <th> Name </th>
                                             <th> Email </th>
                                             <th> Phone </th>
+                                            <th>Date</th>
                                             <th> {Checked} Name </th>
                                             {Checked=='Hotels'?(<th> Check In </th>):(<></>)}
                                             {Checked=='Hotels'?(<th> Check Out </th>):(<></>)}
@@ -450,6 +390,7 @@ const List = (props) => {
             <td> {doc.user.name} </td>
             <td> {doc.user.email} </td>
             <td> {doc.user.phone} </td>
+            <td>{convertDate(doc.data.date)} </td>
             <td>
                 {doc.hotel?doc.hotel.name:''}
             </td>
@@ -479,7 +420,7 @@ const List = (props) => {
                         }} className="btn btn-gradient-danger btn-rounded btn-fw">Cancel</button>
                     </td>
                 )
-            }
+            } 
         </tr>
     )
 }
@@ -492,6 +433,7 @@ const List2 = (props) => {
             <td> {doc.user?doc.user.name:'...'} </td>
             <td> {doc.user.email} </td>
             <td> {doc.user?doc.user.phone:'---'} </td>
+            <td>{convertDate(doc.data.date)} </td>
             <td>
                 {doc.deal && doc.deal.name?doc.deal.name:'...'}
             </td>

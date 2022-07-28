@@ -97,14 +97,17 @@ const AllMember = () => {
                                                         <td className="py-1">
                                                         <img src={doc&&doc.image?doc.image:'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-default-avatar-profile-icon-vector-social-media-user-image-vector-illustration-227787227.jpg'} alt="profile" />
                                                         </td>
-                                                        <td> {doc.name ? doc.name : '--'} </td>
+                                                        <td> {doc.name ? doc.name : 'empty'} </td>
                                                         <td> {doc.membership_type!=null ? 
                                                             doc.membership_type.match(/gold/)?'SCG':doc.membership_type.match(/silver/)?'SCS':
-                                                        doc.membership_type.match(/platinum/)?'SCP':doc.membership_type.match(/diamond/)?'SCD':'NON':''} </td>
-                                                        <td> {doc.email ? doc.email : '--'} </td>
-                                                        <td> {doc.phone ? doc.phone : '--'} </td>
-                                                        <td>{doc.ending_date?convertDate(doc.ending_date):''}</td>
-                                                        <td>{doc.creationTime?convertDate(doc.creationTime):''}</td>
+                                                        doc.membership_type.match(/platinum/)?'SCP':doc.membership_type.match(/diamond/)?'SCD':'NON':'NON'}
+                                                        {
+                                                            !doc.paid?' Member':' (Free Trail)'
+                                                        } </td>
+                                                        <td> {doc.email ? doc.email : 'empty'} </td>
+                                                        <td> {doc.phone ? doc.phone : 'empty'} </td>
+                                                        <td>{doc.ending_date?convertDate(doc.ending_date):'empty'}</td>
+                                                        <td>{doc.creationTime?convertDate(doc.creationTime):'empty'}</td>
                                                         <td>
                                                             <Link to={'/member_action/'+doc.uid}>
                                                                 Change Plan

@@ -57,6 +57,7 @@ const Update = () => {
       setCheckOut(arr[0].check_out)
       setDescription(arr[0].description)
       setPhone(arr[0].phone)
+      setRemember(arr[0].remember)
       }
     }
   },[hotels+id])
@@ -107,8 +108,8 @@ const Update = () => {
     postData(url + '/updateData',{
       auth: auth.currentUser,
       tableName: 'hotels',
-      columns: ['name','address','location','check_in','check_out','conditions','description','categories','near_by','phone'],
-      values: [Name.replace(/[^\w\s]/gi, ''),Address,Location,CheckIn,CheckOut,handleAmenities(conditions),Description,Category,NearBy1+(NearBy2?','+NearBy2:''),Phone],
+      columns: ['name','address','location','check_in','check_out','conditions','description','categories','near_by','phone','remember'],
+      values: [Name.replace(/[^\w\s]/gi, ''),Address,Location,CheckIn,CheckOut,handleAmenities(conditions),Description,Category,NearBy1+(NearBy2?','+NearBy2:''),Phone,Remember?Remember:''],
       condition:'id='+ id
     }).then(result => {
       console.log(result);

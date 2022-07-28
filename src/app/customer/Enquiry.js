@@ -84,7 +84,9 @@ const Enquiry = () => {
                                         <tr>
                                             <th> Name </th>
                                             <th> Email </th>
+                                            <th>Membership</th>
                                             <th> Phone </th>
+                                            <th> Date </th>
                                             <th> Address </th>
                                             <th>Room</th>
                                             <th>Children</th>
@@ -154,7 +156,9 @@ const List = (props) => {
         <tr>
             <td> {user?user.filter(h => h.uid ==doc.uid)[0].name:''} </td>
             <td> {user?user.filter(h => h.uid ==doc.uid)[0].email:''} </td>
+            <td> {user?user.filter(h => h.uid ==doc.uid)[0].membership_type:'non'} </td>
             <td> {user?user.filter(h => h.uid ==doc.uid)[0].phone:''} </td>
+            <td>{convertDate(doc.date)}</td>
             <td>
                 {doc.address}
             </td>
